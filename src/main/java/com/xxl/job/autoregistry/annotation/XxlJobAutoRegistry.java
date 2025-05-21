@@ -1,8 +1,8 @@
-package com.xxl.job.autoregistry.api.annotation;
+package com.xxl.job.autoregistry.annotation;
 
-import com.xxl.job.autoregistry.api.enums.ExecutorRouteStrategyEnum;
-import com.xxl.job.autoregistry.api.enums.MisfireStrategyEnum;
-import com.xxl.job.autoregistry.api.enums.ScheduleTypeEnum;
+import com.xxl.job.autoregistry.enums.ExecutorRouteStrategyEnum;
+import com.xxl.job.autoregistry.enums.MisfireStrategyEnum;
+import com.xxl.job.autoregistry.enums.ScheduleTypeEnum;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.handler.annotation.XxlJob;
 

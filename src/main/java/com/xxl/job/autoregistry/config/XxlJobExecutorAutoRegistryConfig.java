@@ -1,11 +1,7 @@
 package com.xxl.job.autoregistry.config;
 
 import com.xxl.job.autoregistry.api.XxlJobService;
-import com.xxl.job.autoregistry.api.annotation.XxlJobAutoRegistry;
-import com.xxl.job.core.context.XxlJobHelper;
-import com.xxl.job.core.handler.annotation.XxlJob;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;

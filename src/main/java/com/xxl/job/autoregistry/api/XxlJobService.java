@@ -405,7 +405,7 @@ public class XxlJobService implements InitializingBean {
      *          true: 新增的任务,新增的任务默认为启动状态
      *          false:修改的任务.修改任务不会变更状态.
      */
-    public Map<Boolean,List<XxlJobInfoDTO>> addJobOrUpdate(List<XxlJobInfoDTO> params){
+    public Map<Boolean, List<XxlJobInfoDTO>> addJobOrUpdate(List<XxlJobInfoDTO> params) {
         if (params == null || params.isEmpty()) {
             return Collections.emptyMap();
         }
@@ -413,42 +413,33 @@ public class XxlJobService implements InitializingBean {
         Map<Boolean, List<XxlJobInfoDTO>> resultMap = new HashMap<>();
         params.stream()
                 .collect(Collectors.groupingBy(XxlJobInfoDTO::getJobGroup))
-                .forEach((jobGroup,jobList) -> {
+                .forEach((jobGroup, jobList) -> {
                     Map<String, XxlJobInfoVO> serverDataMap = queryAllJobs(jobGroup).stream().collect(Collectors.toMap(XxlJobInfoVO::getExecutorHandler, Function.identity()));
                     for (XxlJobInfoDTO param : jobList) {
                         XxlJobInfoVO serverVo = serverDataMap.get(param.getExecutorHandler());
-                        if(serverVo == null){
-                            resultMap.compute(true, (k, v) -> Optional.ofNullable(v).orElseGet(ArrayList::new)).add(param);
-                        }else{
-                            boolean isEquals = equals(param,serverVo);
-                            if(!isEquals){
-                                param.setId(serverVo.getId());
-                                resultMap.compute(false, (k, v) -> Optional.ofNullable(v).orElseGet(ArrayList::new)).add(param);
+                        if (serverVo == null) {
+                            try {
+                                int jobId = addJob(param);
+                                startJob(jobId);
+                                param.setId(jobId);
+                                resultMap.compute(true, (k, v) -> Optional.ofNullable(v).orElseGet(ArrayList::new)).add(param);
+                            } catch (Exception e) {
+                                log.error("新增任务[{}]失败:{}", param.getExecutorHandler(), e.getMessage(), e);
+                            }
+                        } else {
+                            boolean isEquals = equals(param, serverVo);
+                            if (!isEquals) {
+                                try {
+                                    param.setId(serverVo.getId());
+                                    updateJob(param);
+                                    resultMap.compute(false, (k, v) -> Optional.ofNullable(v).orElseGet(ArrayList::new)).add(param);
+                                } catch (Exception e) {
+                                    log.error("修改任务[{}]失败:{}", param.getExecutorHandler(), e.getMessage(), e);
+                                }
                             }
                         }
                     }
                 });
-        //调用接口执行任务新增和修改
-        Optional.ofNullable(resultMap.get(true)).ifPresent(list -> {
-            for (XxlJobInfoDTO xxlJobInfoDTO : list) {
-                try {
-                    int jobId = addJob(xxlJobInfoDTO);
-                    startJob(jobId);
-                    xxlJobInfoDTO.setId(jobId);
-                } catch (Exception e) {
-                    log.error("新增任务[{}]失败:{}", xxlJobInfoDTO.getExecutorHandler(),e.getMessage(),e);
-                }
-            }
-        });
-        Optional.ofNullable(resultMap.get(false)).ifPresent(list -> {
-            for (XxlJobInfoDTO xxlJobInfoDTO : list) {
-                try {
-                    updateJob(xxlJobInfoDTO);
-                } catch (Exception e) {
-                    log.error("修改任务[{}]失败:{}", xxlJobInfoDTO.getExecutorHandler(),e.getMessage(),e);
-                }
-            }
-        });
         return resultMap;
     }
 
@@ -541,7 +532,7 @@ public class XxlJobService implements InitializingBean {
      * @return
      */
     private <T> boolean equals(T obj1,T obj2){
-        if(equals(obj1,obj2)){
+        if(Objects.equals(obj1,obj2)){
             return true;
         }
         Class<?> clazz = Optional.ofNullable(obj1).orElse(obj2).getClass();

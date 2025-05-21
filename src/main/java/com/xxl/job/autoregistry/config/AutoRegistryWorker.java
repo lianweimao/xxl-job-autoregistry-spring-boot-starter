@@ -2,7 +2,7 @@ package com.xxl.job.autoregistry.config;
 
 import cn.hutool.extra.spring.SpringUtil;
 import com.xxl.job.autoregistry.api.XxlJobService;
-import com.xxl.job.autoregistry.api.annotation.XxlJobAutoRegistry;
+import com.xxl.job.autoregistry.annotation.XxlJobAutoRegistry;
 import com.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
 import com.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
 import com.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
@@ -92,36 +92,35 @@ public class AutoRegistryWorker {
                 }
                 XxlJobAutoRegistry xxlJobAutoRegistry = executeMethod.getAnnotation(XxlJobAutoRegistry.class);
                 // 添加并启动系统任务
-                try {
-                    XxlJobInfoDTO xxlJobInfoDTO = new XxlJobInfoDTO()
-                            .setJobGroup(xxlJobGroup.getId())
-                            .setJobDesc(xxlJobAutoRegistry.desc())
-                            .setAuthor("来自%s的定时任务".formatted(appname))
-                            .setAlarmEmail(null)
-                            .setScheduleType(xxlJobAutoRegistry.scheduleType())
-                            .setScheduleConf(xxlJobAutoRegistry.conf())
-                            .setMisfireStrategy(xxlJobAutoRegistry.misfireStrategy())
-                            .setExecutorRouteStrategy(xxlJobAutoRegistry.routeStrategy())
-                            .setExecutorHandler(xxlJob.value())
-                            .setExecutorParam(xxlJobAutoRegistry.param())
-                            .setExecutorBlockStrategy(xxlJobAutoRegistry.blockStrategy());
-                    systemJobList.add(xxlJobInfoDTO);
-                    log.info("系统任务[{}]已注册到任务调度服务,执行表达式为[{}]", xxlJobAutoRegistry.desc(), xxlJobAutoRegistry.conf());
-                } catch (Exception e) {
-                    log.error("注册系统任务[{}]发生错误:{}", xxlJobAutoRegistry.desc(), e.getMessage(), e);
-                }
+                XxlJobInfoDTO xxlJobInfoDTO = new XxlJobInfoDTO()
+                        .setJobGroup(xxlJobGroup.getId())
+                        .setJobDesc(xxlJobAutoRegistry.desc())
+                        .setAuthor("来自%s的定时任务".formatted(appname))
+                        .setAlarmEmail(null)
+                        .setScheduleType(xxlJobAutoRegistry.scheduleType())
+                        .setScheduleConf(xxlJobAutoRegistry.conf())
+                        .setMisfireStrategy(xxlJobAutoRegistry.misfireStrategy())
+                        .setExecutorRouteStrategy(xxlJobAutoRegistry.routeStrategy())
+                        .setExecutorHandler(xxlJob.value())
+                        .setExecutorParam(xxlJobAutoRegistry.param())
+                        .setExecutorBlockStrategy(xxlJobAutoRegistry.blockStrategy());
+                systemJobList.add(xxlJobInfoDTO);
             }
         }
         //执行任务的批量处理
         Map<Boolean, List<XxlJobInfoDTO>> resultMap = xxlJobService.addJobOrUpdate(systemJobList);
         //打印结果
-        List<XxlJobInfoDTO> addList = resultMap.get(true);
-        if(addList != null){
-            addList.forEach(item -> log.info("新增定时任务[{}],描述[{}],表达式[{}],",item.getExecutorHandler(),item.getJobDesc(),item.getScheduleConf()));
-        }
-        List<XxlJobInfoDTO> updateList = resultMap.get(false);
-        if(updateList != null){
-            updateList.forEach(item -> log.info("修改定时任务[{}],修改后的描述[{}],表达式[{}],其他信息请到调度中心查看",item.getExecutorHandler(),item.getJobDesc(),item.getScheduleConf()));
+        if(resultMap == null || resultMap.isEmpty()){
+            log.info("本次没有新增或修改任何任务.");
+        }else{
+            List<XxlJobInfoDTO> addList = resultMap.get(true);
+            if(addList != null){
+                addList.forEach(item -> log.info("新增定时任务[{}],描述[{}],表达式[{}]",item.getExecutorHandler(),item.getJobDesc(),item.getScheduleConf()));
+            }
+            List<XxlJobInfoDTO> updateList = resultMap.get(false);
+            if(updateList != null){
+                updateList.forEach(item -> log.info("修改定时任务[{}],修改后的描述[{}],表达式[{}],其他信息请到调度中心查看",item.getExecutorHandler(),item.getJobDesc(),item.getScheduleConf()));
+            }
         }
     }
 

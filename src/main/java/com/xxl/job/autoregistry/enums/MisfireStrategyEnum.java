@@ -1,4 +1,4 @@
-package com.xxl.job.autoregistry.api.enums;
+package com.xxl.job.autoregistry.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
