@@ -1,0 +1,53 @@
+# 使用说明
+
+本插件专注于任务注册和更新。服务启动后，会通过异步的方式进行任务注册。
+
+任务以`@XxlJob`注解的值，也就是jobhandler作为唯一标识，从调度中心获取数据进行对比。
+
+若任务不存在，则新增并立刻启动。
+
+若任务已存在，则对比其余参数，若不一致，则进行修改。
+
+> 修改时不会修改任务状态
+
+> 若调度中心无法访问，上述工作会等待最多120秒，超过120秒则放弃。
+
+## 自动注册任务到调度中心
+只需要很简单的两步
+1. 在你的配置文件中，增加以下配置
+~~~properties
+# 调度中心用户名[选填],为空时任务不会自动注册
+xxl.job.admin.username=admin
+# 调度中心密码[选填],为空时任务不会自动注册
+xxl.job.admin.password=123456
+~~~
+
+2. 在你的定时任务handler上，增加注解`@XxlJobAutoRegistry`即可。默认情况下，只需要最少2个参数就可以完成。
+
+~~~java
+@XxlJobAutoRegistry(conf = "* 1 * * * ?",desc = "这是一个demoJob")
+@XxlJob("demoJob")
+public void demoJob(){
+    String jobParam = XxlJobHelper.getJobParam();
+    // do job
+}
+~~~
+
+当然，你可以通过修改注解参数去自定义，支持修改以下参数：
+
+* 调度类型
+* 阻塞处理策略
+* 路由策略
+* 调度过期策略
+* 执行参数
+
+如果你的服务是集群部署，在启动类增加`@EnableConcurrentLockForXxlJobAutoRegistry`注解，通过分部署锁控制，防止并发更新导致的任务重复问题。
+~~~java
+@SpringBootApplication
+@EnableConcurrentLockForXxlJobAutoRegistry
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class, args);
+    }
+}
+~~~
