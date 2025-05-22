@@ -5,7 +5,19 @@
 
 	<groupId>io.github.lianweimao</groupId>
 	<artifactId>xxl-job-autoregistry-spring-boot-starter</artifactId>
-	<version>3.1.0-SNAPSHOT</version>
+	<version>3.1.0</version>
+
+	<name>${project.groupId}:${project.artifactId}</name>
+	<description>XXL JOB 任务自定注册和更新.</description>
+	<url>https://github.com/lianweimao/xxl-job-autoregistry-spring-boot-starter</url>
+
+
+	<licenses>
+		<license>
+			<name>Apache License, Version 2.0</name>
+			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
+		</license>
+	</licenses>
 
 	<developers>
 		<developer>
@@ -13,25 +25,21 @@
 			<email>lianweimao@outlook.com</email>
 		</developer>
 	</developers>
-	<licenses>
-		<license>
-			<name>Apache License, Version 2.0</name>
-			<url>https://www.apache.org/licenses/LICENSE-2.0</url>
-		</license>
-	</licenses>
+
 	<scm>
-		<connection>scm:git:https://github.com/lianweimao/xxl-job-autoregistry-spring-boot-starter.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com:lianweimao/xxl-job-autoregistry-spring-boot-starter.git</developerConnection>
-		<url>https://github.com/lianweimao/xxl-job-autoregistry-spring-boot-starter/tree/master</url>
+		<connection>scm:git:git://github.com/lianweimao/xxl-job-autoregistry-spring-boot-starter.git</connection>
+		<developerConnection>scm:git:ssh://github.com:lianweimao/xxl-job-autoregistry-spring-boot-starter.git</developerConnection>
+		<url>http://github.com/lianweimao/xxl-job-autoregistry-spring-boot-starter/tree/master</url>
 	</scm>
 
-	<url>https://github.com/lianweimao/xxl-job-autoregistry-spring-boot-starter</url>
+
 
 	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>17</java.version>
 		<maven.compiler.source>17</maven.compiler.source>
 		<maven.compiler.target>17</maven.compiler.target>
-		<spring-boot.version>3.1.5</spring-boot.version>
+		<spring-boot.version>3.1.12</spring-boot.version>
 		<xxl-job-core.version>3.1.0</xxl-job-core.version>
 		<hutool.version>5.8.38</hutool.version>
 		<lombok.version>1.18.38</lombok.version>
@@ -132,15 +140,17 @@
 		</repository>
 		<snapshotRepository>
 			<id>central</id>
-			<url>https://central.sonatype.com/</url>
+			<url>https://central.sonatype.com/repository/maven-snapshots/</url>
 		</snapshotRepository>
 	</distributionManagement>
+
 
 	<build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.14.0</version>
 				<configuration>
 					<annotationProcessorPaths>
 						<path>
@@ -150,100 +160,76 @@
 					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
+			<!-- Source -->
 			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>3.3.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Javadoc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.11.2</version>
 				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
+					<show>private</show>
+					<nohelp>true</nohelp>
+					<charset>UTF-8</charset>
+					<encoding>UTF-8</encoding>
+					<docencoding>UTF-8</docencoding>
+					<doclint>none</doclint>
+					<detectJavaApiLink>false</detectJavaApiLink>
+				</configuration>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Gpg Signature -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>3.2.7</version>
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- 用于gpg非交互式密码输入 -->
+					<gpgArguments>
+						<arg>--pinentry-mode</arg>
+						<arg>loopback</arg>
+					</gpgArguments>
+				</configuration>
+			</plugin>
+			<!-- Central发布插件 -->
+			<plugin>
+				<groupId>org.sonatype.central</groupId>
+				<artifactId>central-publishing-maven-plugin</artifactId>
+				<version>0.7.0</version>
+				<extensions>true</extensions>
+				<configuration>
+					<publishingServerId>central</publishingServerId>
+					<checksums>required</checksums>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
-
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<!-- Source -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<version>3.3.1</version>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>jar-no-fork</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- Javadoc -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<version>3.11.2</version>
-						<configuration>
-							<show>private</show>
-							<nohelp>true</nohelp>
-							<charset>UTF-8</charset>
-							<encoding>UTF-8</encoding>
-							<docencoding>UTF-8</docencoding>
-							<doclint>none</doclint>
-							<detectJavaApiLink>false</detectJavaApiLink>
-						</configuration>
-						<executions>
-							<execution>
-								<phase>package</phase>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<!-- Gpg Signature -->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-gpg-plugin</artifactId>
-						<version>3.2.7</version>
-						<executions>
-							<execution>
-								<phase>verify</phase>
-								<goals>
-									<goal>sign</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-							<!-- 用于gpg非交互式密码输入 -->
-							<gpgArguments>
-								<arg>--pinentry-mode</arg>
-								<arg>loopback</arg>
-							</gpgArguments>
-						</configuration>
-					</plugin>
-					<!-- Central发布插件 -->
-					<plugin>
-						<groupId>org.sonatype.central</groupId>
-						<artifactId>central-publishing-maven-plugin</artifactId>
-						<version>0.7.0</version>
-						<extensions>true</extensions>
-						<configuration>
-							<publishingServerId>central</publishingServerId>
-							<checksums>required</checksums>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-
-
 
 </project>
