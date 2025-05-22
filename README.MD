@@ -18,9 +18,9 @@
 
 ## 版本对应关系
 
-| 插件版本 | JDK版本 | SpringBoot版本                | XxlJob版本              |
-| -------- | ------- | ----------------------------- | ----------------------- |
-| 3.1.0    | 17+     | 3.1.X ~ 3.4.X；更高版本未测试 | <=3.1.0；更高版本未测试 |
+| 插件版本  | JDK版本 | SpringBoot版本                | XxlJob版本              |
+|-------| ------- | ----------------------------- | ----------------------- |
+| 3.1.X | 17+     | 3.1.X ~ 3.4.X；更高版本未测试 | <=3.1.0；更高版本未测试 |
 
 ## 自动注册任务到调度中心
 
@@ -30,7 +30,7 @@
 <dependency>
     <groupId>io.github.lianweimao</groupId>
     <artifactId>xxl-job-autoregistry-spring-boot-starter</artifactId>
-    <version>3.1.0</version>
+    <version>${xxl-job-autoregistry.version}</version>
 </dependency>
 ~~~
 
