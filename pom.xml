@@ -5,7 +5,7 @@
 
 	<groupId>io.github.lianweimao</groupId>
 	<artifactId>xxl-job-autoregistry-spring-boot-starter</artifactId>
-	<version>3.1.0</version>
+	<version>3.1.1</version>
 
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description>XXL JOB 任务自定注册和更新.</description>
