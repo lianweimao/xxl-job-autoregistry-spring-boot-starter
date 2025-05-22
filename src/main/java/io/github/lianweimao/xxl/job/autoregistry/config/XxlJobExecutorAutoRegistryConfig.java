@@ -22,7 +22,7 @@ public class XxlJobExecutorAutoRegistryConfig {
     }
 
     @Bean
-    public AutoRegistryWorker systemJobUpdate(XxlJobService xxlJobService,XxlJobProperties xxlJobProperties){
+    public AutoRegistryWorker autoRegistryWorker(XxlJobService xxlJobService,XxlJobProperties xxlJobProperties){
         return new AutoRegistryWorker(xxlJobService,xxlJobProperties);
     }
 
