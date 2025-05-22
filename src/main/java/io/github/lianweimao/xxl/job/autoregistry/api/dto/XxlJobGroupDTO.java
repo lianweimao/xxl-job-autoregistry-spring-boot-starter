@@ -1,4 +1,4 @@
-package com.xxl.job.autoregistry.api.dto;
+package io.github.lianweimao.xxl.job.autoregistry.api.dto;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.Data;

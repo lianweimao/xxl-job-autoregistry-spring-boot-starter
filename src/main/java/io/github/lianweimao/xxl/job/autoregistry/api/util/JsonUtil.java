@@ -1,4 +1,4 @@
-package com.xxl.job.autoregistry.api.util;
+package io.github.lianweimao.xxl.job.autoregistry.api.util;
 
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.core.type.TypeReference;

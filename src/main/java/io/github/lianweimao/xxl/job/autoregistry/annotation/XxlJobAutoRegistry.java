@@ -1,8 +1,8 @@
-package com.xxl.job.autoregistry.annotation;
+package io.github.lianweimao.xxl.job.autoregistry.annotation;
 
-import com.xxl.job.autoregistry.enums.ExecutorRouteStrategyEnum;
-import com.xxl.job.autoregistry.enums.MisfireStrategyEnum;
-import com.xxl.job.autoregistry.enums.ScheduleTypeEnum;
+import io.github.lianweimao.xxl.job.autoregistry.enums.ExecutorRouteStrategyEnum;
+import io.github.lianweimao.xxl.job.autoregistry.enums.MisfireStrategyEnum;
+import io.github.lianweimao.xxl.job.autoregistry.enums.ScheduleTypeEnum;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import com.xxl.job.core.handler.annotation.XxlJob;
 

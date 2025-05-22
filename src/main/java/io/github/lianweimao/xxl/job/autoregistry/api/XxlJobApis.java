@@ -1,4 +1,4 @@
-package com.xxl.job.autoregistry.api;
+package io.github.lianweimao.xxl.job.autoregistry.api;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

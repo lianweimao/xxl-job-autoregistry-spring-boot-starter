@@ -1,4 +1,4 @@
-package com.xxl.job.autoregistry.config;
+package io.github.lianweimao.xxl.job.autoregistry.config;
 
 import cn.hutool.extra.spring.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -7,7 +7,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -15,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 public class XxlJobAutoRegistryAspect {
 
-    @Around(value="execution(public * com.xxl.job.autoregistry.config.AutoRegistryWorker.afterSingletonsInstantiated(..))")
+    @Around(value="execution(public * io.github.lianweimao.xxl.job.autoregistry.config.AutoRegistryWorker.afterSingletonsInstantiated(..))")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
         RedissonClient redissonClient = SpringUtil.getBean(RedissonClient.class);
         RLock lock = redissonClient.getLock("XxlJobAutoRegistry");

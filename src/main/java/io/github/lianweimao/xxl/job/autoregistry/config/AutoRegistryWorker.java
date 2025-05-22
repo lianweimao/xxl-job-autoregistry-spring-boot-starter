@@ -1,11 +1,11 @@
-package com.xxl.job.autoregistry.config;
+package io.github.lianweimao.xxl.job.autoregistry.config;
 
 import cn.hutool.extra.spring.SpringUtil;
-import com.xxl.job.autoregistry.api.XxlJobService;
-import com.xxl.job.autoregistry.annotation.XxlJobAutoRegistry;
-import com.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
-import com.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
-import com.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
+import io.github.lianweimao.xxl.job.autoregistry.api.XxlJobService;
+import io.github.lianweimao.xxl.job.autoregistry.annotation.XxlJobAutoRegistry;
+import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
+import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
+import io.github.lianweimao.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
 import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -119,7 +119,7 @@ public class AutoRegistryWorker {
             }
             List<XxlJobInfoDTO> updateList = resultMap.get(false);
             if(updateList != null){
-                updateList.forEach(item -> log.info("修改定时任务[{}],修改后的描述[{}],表达式[{}],其他信息请到调度中心查看",item.getExecutorHandler(),item.getJobDesc(),item.getScheduleConf()));
+                updateList.forEach(item -> log.info("修改定时任务[{}],详情:{}",item.getExecutorHandler(),item.getUpdateContent()));
             }
         }
     }

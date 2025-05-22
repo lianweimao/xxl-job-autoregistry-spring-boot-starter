@@ -1,4 +1,4 @@
-package com.xxl.job.autoregistry.config;
+package io.github.lianweimao.xxl.job.autoregistry.config;
 
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;

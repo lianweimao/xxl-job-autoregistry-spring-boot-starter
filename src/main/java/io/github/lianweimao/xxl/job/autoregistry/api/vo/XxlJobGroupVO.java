@@ -1,4 +1,4 @@
-package com.xxl.job.autoregistry.api.vo;
+package io.github.lianweimao.xxl.job.autoregistry.api.vo;
 
 import lombok.Data;
 

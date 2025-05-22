@@ -1,11 +1,11 @@
-package com.xxl.job.autoregistry.config;
+package io.github.lianweimao.xxl.job.autoregistry.config;
 
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
 
 /**
- * 启用分布式锁.
+ * 启用Redisson分布式锁.
  * 当你的服务器部署方式是分布式场景,可以通过如下注解启用分布式锁.
  * 你需要配置redis
  */
@@ -13,5 +13,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Import(XxlJobAutoRegistryAspect.class)
-public @interface EnableConcurrentLockForXxlJobAutoRegistry {
+public @interface EnableRedissonLockForXxlJobAutoRegistry {
 }

@@ -1,9 +1,10 @@
 package com.xxl.job.autoregistry.api;
 
-import com.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
-import com.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
-import com.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
-import com.xxl.job.autoregistry.api.vo.XxlJobInfoVO;
+import io.github.lianweimao.xxl.job.autoregistry.api.XxlJobService;
+import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
+import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
+import io.github.lianweimao.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
+import io.github.lianweimao.xxl.job.autoregistry.api.vo.XxlJobInfoVO;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

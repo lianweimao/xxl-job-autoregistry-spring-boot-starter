@@ -1,9 +1,9 @@
-package com.xxl.job.autoregistry.api.dto;
+package io.github.lianweimao.xxl.job.autoregistry.api.dto;
 
 import cn.hutool.core.util.StrUtil;
-import com.xxl.job.autoregistry.enums.ExecutorRouteStrategyEnum;
-import com.xxl.job.autoregistry.enums.MisfireStrategyEnum;
-import com.xxl.job.autoregistry.enums.ScheduleTypeEnum;
+import io.github.lianweimao.xxl.job.autoregistry.enums.ExecutorRouteStrategyEnum;
+import io.github.lianweimao.xxl.job.autoregistry.enums.MisfireStrategyEnum;
+import io.github.lianweimao.xxl.job.autoregistry.enums.ScheduleTypeEnum;
 import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -55,6 +55,13 @@ public class XxlJobInfoDTO {
 	private String glueRemark;		// GLUE备注
 
 	private String childJobId;		// 子任务ID，多个逗号分隔
+
+	/**
+	 * 修改详情
+	 * @deprecated 注解用于在转换为表单数据是标记为跳过
+	 */
+	@Deprecated
+	private String updateContent;
 
 	/**
 	 * 使用必须参数构造对象

@@ -41,10 +41,10 @@ public void demoJob(){
 * 调度过期策略
 * 执行参数
 
-如果你的服务是集群部署，在启动类增加`@EnableConcurrentLockForXxlJobAutoRegistry`注解，通过分部署锁控制，防止并发更新导致的任务重复问题。
+如果你的服务是集群部署，在启动类增加`@EnableRedissonLockForXxlJobAutoRegistry`注解，通过分部署锁控制，防止并发更新导致的任务重复问题。
 ~~~java
 @SpringBootApplication
-@EnableConcurrentLockForXxlJobAutoRegistry
+@EnableRedissonLockForXxlJobAutoRegistry
 public class App {
     public static void main(String[] args) {
         SpringApplication.run(App.class, args);

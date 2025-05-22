@@ -1,16 +1,16 @@
-package com.xxl.job.autoregistry.api;
+package io.github.lianweimao.xxl.job.autoregistry.api;
 
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
-import com.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
-import com.xxl.job.autoregistry.api.util.JsonUtil;
-import com.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
-import com.xxl.job.autoregistry.api.vo.XxlJobInfoVO;
-import com.xxl.job.autoregistry.config.XxlJobProperties;
+import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
+import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
+import io.github.lianweimao.xxl.job.autoregistry.api.util.JsonUtil;
+import io.github.lianweimao.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
+import io.github.lianweimao.xxl.job.autoregistry.api.vo.XxlJobInfoVO;
+import io.github.lianweimao.xxl.job.autoregistry.config.XxlJobProperties;
 import com.xxl.job.core.biz.model.ReturnT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -450,64 +450,89 @@ public class XxlJobService implements InitializingBean {
      * @return
      */
     private boolean equals(XxlJobInfoDTO param, XxlJobInfoVO serverVo) {
+        boolean equals = true;
+        List<String> updateContent = new ArrayList<>();
         if(param == null || serverVo == null){
-            return false;
+            equals = false;
         }
         if(!equals(param.getJobDesc(),serverVo.getJobDesc())){
-            return false;
+            equals = false;
+            updateContent.add("任务描述由[%s]修改为[%s]".formatted(serverVo.getJobDesc(),param.getJobDesc()));
         }
         if(!equals(param.getAuthor(),serverVo.getAuthor())){
-            return false;
+            equals = false;
+            updateContent.add("负责人由[%s]修改为[%s]".formatted(serverVo.getAuthor(),param.getAuthor()));
         }
         if(!equals(param.getAlarmEmail(),serverVo.getAlarmEmail())){
-            return false;
+            equals = false;
+            updateContent.add("报警邮件由[%s]修改为[%s]".formatted(serverVo.getAlarmEmail(),param.getAlarmEmail()));
         }
         if(!equals(param.getScheduleType(),serverVo.getScheduleType())){
-            return false;
+            equals = false;
+            updateContent.add("调度类型由[%s]修改为[%s]".formatted(serverVo.getScheduleType(),param.getScheduleType()));
         }
         if(!equals(param.getScheduleConf(),serverVo.getScheduleConf())){
-            return false;
-        }
-        if(!equals(param.getMisfireStrategy(),serverVo.getMisfireStrategy())){
-            return false;
-        }
-        if(!equals(param.getExecutorRouteStrategy(),serverVo.getExecutorRouteStrategy())){
-            return false;
-        }
-        if(!equals(param.getExecutorHandler(),serverVo.getExecutorHandler())){
-            return false;
-        }
-        if(!equals(param.getExecutorParam(),serverVo.getExecutorParam())){
-            return false;
-        }
-        if(!equals(param.getExecutorBlockStrategy(),serverVo.getExecutorBlockStrategy())){
-            return false;
-        }
-        if(!equals(param.getExecutorTimeout(),serverVo.getExecutorTimeout())){
-            return false;
-        }
-        if(!equals(param.getExecutorFailRetryCount(),serverVo.getExecutorFailRetryCount())){
-            return false;
+            equals = false;
+            updateContent.add("调度参数由[%s]修改为[%s]".formatted(serverVo.getScheduleConf(),param.getScheduleConf()));
         }
         if(!equals(param.getGlueType(),serverVo.getGlueType())){
-            return false;
+            equals = false;
+            updateContent.add("运行模式由[%s]修改为[%s]".formatted(serverVo.getGlueType(),param.getGlueType()));
         }
-        if(!equals(param.getGlueSource(),serverVo.getGlueSource())){
-            return false;
+        if(!equals(param.getExecutorHandler(),serverVo.getExecutorHandler())){
+            equals = false;
+            updateContent.add("JobHandler由[%s]修改为[%s]".formatted(serverVo.getExecutorHandler(),param.getExecutorHandler()));
         }
-        if(!equals(param.getGlueRemark(),serverVo.getGlueRemark())){
-            return false;
+        if(!equals(param.getExecutorParam(),serverVo.getExecutorParam())){
+            equals = false;
+            updateContent.add("任务参数由[%s]修改为[%s]".formatted(serverVo.getExecutorParam(),param.getExecutorParam()));
+        }
+        if(!equals(param.getExecutorRouteStrategy(),serverVo.getExecutorRouteStrategy())){
+            equals = false;
+            updateContent.add("路由策略由[%s]修改为[%s]".formatted(serverVo.getExecutorRouteStrategy(),param.getExecutorRouteStrategy()));
         }
         if(!equals(param.getChildJobId(),serverVo.getChildJobId())){
-            return false;
+            equals = false;
+            updateContent.add("子任务ID由[%s]修改为[%s]".formatted(serverVo.getChildJobId(),param.getChildJobId()));
         }
-        return true;
+        if(!equals(param.getMisfireStrategy(),serverVo.getMisfireStrategy())){
+            equals = false;
+            updateContent.add("调度过期策略由[%s]修改为[%s]".formatted(serverVo.getMisfireStrategy(),param.getMisfireStrategy()));
+        }
+        if(!equals(param.getExecutorBlockStrategy(),serverVo.getExecutorBlockStrategy())){
+            equals = false;
+            updateContent.add("阻塞处理策略由[%s]修改为[%s]".formatted(serverVo.getExecutorBlockStrategy(),param.getExecutorBlockStrategy()));
+        }
+        if(!equals(param.getExecutorTimeout(),serverVo.getExecutorTimeout())){
+            equals = false;
+            updateContent.add("任务超时时间由[%s]修改为[%s]".formatted(serverVo.getExecutorTimeout(),param.getExecutorTimeout()));
+        }
+        if(!equals(param.getExecutorFailRetryCount(),serverVo.getExecutorFailRetryCount())){
+            equals = false;
+            updateContent.add("失败重试次数由[%s]修改为[%s]".formatted(serverVo.getExecutorFailRetryCount(),param.getExecutorFailRetryCount()));
+        }
+        if(!equals(param.getGlueSource(),serverVo.getGlueSource())){
+            equals = false;
+            updateContent.add("源码由[%s]修改为[%s]".formatted(serverVo.getGlueSource(),param.getGlueSource()));
+        }
+        if(!equals(param.getGlueRemark(),serverVo.getGlueRemark())){
+            equals = false;
+            updateContent.add("源码备注由[%s]修改为[%s]".formatted(serverVo.getGlueRemark(),param.getGlueRemark()));
+        }
+        if(!equals){
+            param.setUpdateContent(String.join(",",updateContent));
+        }
+        return equals;
     }
 
     private MultiValueMap<String,Object> buildFormData(Object paramObj){
         LinkedMultiValueMap<String, Object> formData = new LinkedMultiValueMap<>();
         Method[] methods = ReflectUtil.getMethods(paramObj.getClass());
         for (Field field : ReflectUtil.getFieldsDirectly(paramObj.getClass(), true)) {
+            //跳过持有@Deprecated注解的属性
+            if(field.isAnnotationPresent(Deprecated.class)){
+                continue;
+            }
             Object fieldValue = null;
             if(field.getType().isEnum()){
                 fieldValue = ((Enum) ReflectUtil.getFieldValue(paramObj, field)).name();

@@ -1,6 +1,6 @@
-package com.xxl.job.autoregistry.config;
+package io.github.lianweimao.xxl.job.autoregistry.config;
 
-import com.xxl.job.autoregistry.api.XxlJobService;
+import io.github.lianweimao.xxl.job.autoregistry.api.XxlJobService;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
