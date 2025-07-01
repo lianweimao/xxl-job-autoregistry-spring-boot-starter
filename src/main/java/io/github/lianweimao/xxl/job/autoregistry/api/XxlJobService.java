@@ -161,7 +161,6 @@ public class XxlJobService implements InitializingBean {
     /**
      * 删除执行器
      * @param groupId 执行器ID
-     * @return
      */
     public void removeGroup(int groupId) {
         checkToken();
@@ -305,7 +304,6 @@ public class XxlJobService implements InitializingBean {
     /**
      * 启动任务
      * @param jobId 任务ID
-     * @return
      */
     public void startJob(int jobId) {
         checkToken();
@@ -334,7 +332,6 @@ public class XxlJobService implements InitializingBean {
     /**
      * 停止任务
      * @param jobId 任务ID
-     * @return
      */
     public void stopJob(int jobId) {
         checkToken();
@@ -363,7 +360,6 @@ public class XxlJobService implements InitializingBean {
     /**
      * 删除任务
      * @param jobId 任务ID
-     * @return
      */
     public void removeJob(int jobId) {
         checkToken();

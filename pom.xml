@@ -5,7 +5,7 @@
 
     <groupId>io.github.lianweimao</groupId>
     <artifactId>xxl-job-autoregistry-spring-boot-starter</artifactId>
-    <version>3.1.5</version>
+    <version>3.1.6</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>XXL JOB 执行器的自动创建,任务自动新增并启动,自动更新</description>
@@ -39,8 +39,8 @@
         <java.version>8</java.version>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
-        <spring-boot.version>2.7.18</spring-boot.version>
-        <xxl-job-core.version>3.1.0</xxl-job-core.version>
+        <spring-boot.version>2.4.0</spring-boot.version>
+        <xxl-job-core.version>3.1.1</xxl-job-core.version>
         <hutool.version>5.8.38</hutool.version>
         <lombok.version>1.18.38</lombok.version>
         <redission.version>3.18.0</redission.version>
