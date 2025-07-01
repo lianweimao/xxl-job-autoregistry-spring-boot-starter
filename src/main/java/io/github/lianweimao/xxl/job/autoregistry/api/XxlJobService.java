@@ -39,14 +39,13 @@ public class XxlJobService implements InitializingBean {
     private String hostUrl;
     // restTemplate
     private RestTemplate restTemplate = new RestTemplate();
-    private ObjectMapper objectMapper = new ObjectMapper();
     // token
     private AtomicReference<String> token = new AtomicReference<>();
 
 
     @Override
     public void afterPropertiesSet() throws Exception {
-       hostUrl = xxlJobProperties.getFirstAdminAddress();
+        hostUrl = xxlJobProperties.getFirstAdminAddress();
     }
 
     /**
@@ -63,7 +62,7 @@ public class XxlJobService implements InitializingBean {
      * @return
      */
     private String getCookie(){
-        return "XXL_JOB_LOGIN_IDENTITY=%s".formatted(token.get());
+        return String.format("XXL_JOB_LOGIN_IDENTITY=%s",token.get());
     }
 
 
@@ -80,7 +79,7 @@ public class XxlJobService implements InitializingBean {
                     url,
                     XxlJobApis.LOGIN.getMethod(),
                     new HttpEntity<>(param,null),
-                    new ParameterizedTypeReference<>() {
+                    new ParameterizedTypeReference<ReturnT<String>>() {
                     }
             );
             ReturnT<String> returnBody = Optional.of(exchange)
@@ -88,7 +87,7 @@ public class XxlJobService implements InitializingBean {
                     .map(ResponseEntity::getBody)
                     .orElseThrow(() -> new IllegalStateException("登录失败"));
             if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
-                throw new IllegalStateException("登录失败:%s".formatted(returnBody.getMsg()));
+                throw new IllegalStateException(String.format("登录失败:%s",returnBody.getMsg()));
             }
             HttpHeaders headers = exchange.getHeaders();
             List<String> vals = headers.get("Set-Cookie");
@@ -120,7 +119,7 @@ public class XxlJobService implements InitializingBean {
                 url,
                 api.getMethod(),
                 new HttpEntity<>(param,headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<String>() {
                 }
         );
         List<XxlJobGroupVO> xxlJobGroupDTOS = Optional.of(exchange)
@@ -147,7 +146,7 @@ public class XxlJobService implements InitializingBean {
                 url,
                 api.getMethod(),
                 new HttpEntity<>(buildFormData(param),headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<ReturnT<String>>() {
                 }
         );
         ReturnT<String> returnBody = Optional.of(exchange)
@@ -155,7 +154,7 @@ public class XxlJobService implements InitializingBean {
                 .map(ResponseEntity::getBody)
                 .orElseThrow(() -> new IllegalStateException("新增执行器失败"));
         if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
-            throw new IllegalStateException("新增执行器失败:%s".formatted(returnBody.getMsg()));
+            throw new IllegalStateException(String.format("新增执行器失败:%s",returnBody.getMsg()));
         }
     }
 
@@ -176,7 +175,7 @@ public class XxlJobService implements InitializingBean {
                 url,
                 api.getMethod(),
                 new HttpEntity<>(param,headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<ReturnT<String>>() {
                 }
         );
         ReturnT<String> returnBody = Optional.of(exchange)
@@ -184,7 +183,7 @@ public class XxlJobService implements InitializingBean {
                 .map(ResponseEntity::getBody)
                 .orElseThrow(() -> new IllegalStateException("删除执行器失败"));
         if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
-            throw new IllegalStateException("删除执行器失败:%s".formatted(returnBody.getMsg()));
+            throw new IllegalStateException(String.format("删除执行器失败:%s",returnBody.getMsg()));
         }
     }
 
@@ -196,7 +195,7 @@ public class XxlJobService implements InitializingBean {
      */
     public XxlJobGroupVO findGroupOrSaveIfNotExists(XxlJobGroupDTO param){
         String appname = param.getAppname();
-        if(appname == null || appname.isBlank()){
+        if(StrUtil.isBlank(appname)){
             throw new IllegalArgumentException("appname不能为空");
         }
         // 查询执行器
@@ -232,12 +231,12 @@ public class XxlJobService implements InitializingBean {
         param.add("author","");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",getCookie());
-        
+
         ResponseEntity<String> exchange = restTemplate.exchange(
                 url,
                 api.getMethod(),
                 new HttpEntity<>(param,headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<String>() {
                 }
         );
         List<XxlJobInfoVO> xxlJobGroupDTOS = Optional.of(exchange)
@@ -265,7 +264,7 @@ public class XxlJobService implements InitializingBean {
                 url,
                 api.getMethod(),
                 new HttpEntity<>(buildFormData(param),headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<ReturnT<String>>() {
                 }
         );
         ReturnT<String> returnBody = Optional.of(exchange)
@@ -273,7 +272,7 @@ public class XxlJobService implements InitializingBean {
                 .map(ResponseEntity::getBody)
                 .orElseThrow(() -> new IllegalStateException("新增任务失败"));
         if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
-            throw new IllegalStateException("新增任务失败:%s".formatted(returnBody.getMsg()));
+            throw new IllegalStateException(String.format("新增任务失败:%s",returnBody.getMsg()));
         }
         return Integer.parseInt(returnBody.getContent());
     }
@@ -291,7 +290,7 @@ public class XxlJobService implements InitializingBean {
                 url,
                 api.getMethod(),
                 new HttpEntity<>(buildFormData(param),headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<ReturnT<String>>() {
                 }
         );
         ReturnT<String> returnBody = Optional.of(exchange)
@@ -299,7 +298,7 @@ public class XxlJobService implements InitializingBean {
                 .map(ResponseEntity::getBody)
                 .orElseThrow(() -> new IllegalStateException("修改任务失败"));
         if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
-            throw new IllegalStateException("修改任务失败:%s".formatted(returnBody.getMsg()));
+            throw new IllegalStateException(String.format("修改任务失败:%s",returnBody.getMsg()));
         }
     }
 
@@ -320,7 +319,7 @@ public class XxlJobService implements InitializingBean {
                 url,
                 api.getMethod(),
                 new HttpEntity<>(param,headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<ReturnT<String>>() {
                 }
         );
         ReturnT<String> returnBody = Optional.of(exchange)
@@ -328,7 +327,7 @@ public class XxlJobService implements InitializingBean {
                 .map(ResponseEntity::getBody)
                 .orElseThrow(() -> new IllegalStateException("启动任务失败"));
         if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
-            throw new IllegalStateException("启动任务失败:%s".formatted(returnBody.getMsg()));
+            throw new IllegalStateException(String.format("启动任务失败:%s",returnBody.getMsg()));
         }
     }
 
@@ -349,7 +348,7 @@ public class XxlJobService implements InitializingBean {
                 url,
                 api.getMethod(),
                 new HttpEntity<>(param,headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<ReturnT<String>>() {
                 }
         );
         ReturnT<String> returnBody = Optional.of(exchange)
@@ -357,7 +356,7 @@ public class XxlJobService implements InitializingBean {
                 .map(ResponseEntity::getBody)
                 .orElseThrow(() -> new IllegalStateException("停止任务失败"));
         if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
-            throw new IllegalStateException("停止任务失败:%s".formatted(returnBody.getMsg()));
+            throw new IllegalStateException(String.format("停止任务失败:%s",returnBody.getMsg()));
         }
     }
 
@@ -378,7 +377,7 @@ public class XxlJobService implements InitializingBean {
                 url,
                 api.getMethod(),
                 new HttpEntity<>(param,headers),
-                new ParameterizedTypeReference<>() {
+                new ParameterizedTypeReference<ReturnT<String>>() {
                 }
         );
         ReturnT<String> returnBody = Optional.of(exchange)
@@ -386,7 +385,7 @@ public class XxlJobService implements InitializingBean {
                 .map(ResponseEntity::getBody)
                 .orElseThrow(() -> new IllegalStateException("删除任务失败"));
         if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
-            throw new IllegalStateException("删除任务失败:%s".formatted(returnBody.getMsg()));
+            throw new IllegalStateException(String.format("删除任务失败:%s",returnBody.getMsg()));
         }
     }
 
@@ -457,67 +456,67 @@ public class XxlJobService implements InitializingBean {
         }
         if(!equals(param.getJobDesc(),serverVo.getJobDesc())){
             equals = false;
-            updateContent.add("任务描述由[%s]修改为[%s]".formatted(serverVo.getJobDesc(),param.getJobDesc()));
+            updateContent.add(String.format("任务描述由[%s]修改为[%s]",serverVo.getJobDesc(),param.getJobDesc()));
         }
         if(!equals(param.getAuthor(),serverVo.getAuthor())){
             equals = false;
-            updateContent.add("负责人由[%s]修改为[%s]".formatted(serverVo.getAuthor(),param.getAuthor()));
+            updateContent.add(String.format("负责人由[%s]修改为[%s]",serverVo.getAuthor(),param.getAuthor()));
         }
         if(!equals(param.getAlarmEmail(),serverVo.getAlarmEmail())){
             equals = false;
-            updateContent.add("报警邮件由[%s]修改为[%s]".formatted(serverVo.getAlarmEmail(),param.getAlarmEmail()));
+            updateContent.add(String.format("报警邮件由[%s]修改为[%s]",serverVo.getAlarmEmail(),param.getAlarmEmail()));
         }
         if(!equals(param.getScheduleType(),serverVo.getScheduleType())){
             equals = false;
-            updateContent.add("调度类型由[%s]修改为[%s]".formatted(serverVo.getScheduleType(),param.getScheduleType()));
+            updateContent.add(String.format("调度类型由[%s]修改为[%s]",serverVo.getScheduleType(),param.getScheduleType()));
         }
         if(!equals(param.getScheduleConf(),serverVo.getScheduleConf())){
             equals = false;
-            updateContent.add("调度参数由[%s]修改为[%s]".formatted(serverVo.getScheduleConf(),param.getScheduleConf()));
+            updateContent.add(String.format("调度参数由[%s]修改为[%s]",serverVo.getScheduleConf(),param.getScheduleConf()));
         }
         if(!equals(param.getGlueType(),serverVo.getGlueType())){
             equals = false;
-            updateContent.add("运行模式由[%s]修改为[%s]".formatted(serverVo.getGlueType(),param.getGlueType()));
+            updateContent.add(String.format("运行模式由[%s]修改为[%s]",serverVo.getGlueType(),param.getGlueType()));
         }
         if(!equals(param.getExecutorHandler(),serverVo.getExecutorHandler())){
             equals = false;
-            updateContent.add("JobHandler由[%s]修改为[%s]".formatted(serverVo.getExecutorHandler(),param.getExecutorHandler()));
+            updateContent.add(String.format("JobHandler由[%s]修改为[%s]",serverVo.getExecutorHandler(),param.getExecutorHandler()));
         }
         if(!equals(param.getExecutorParam(),serverVo.getExecutorParam())){
             equals = false;
-            updateContent.add("任务参数由[%s]修改为[%s]".formatted(serverVo.getExecutorParam(),param.getExecutorParam()));
+            updateContent.add(String.format("任务参数由[%s]修改为[%s]",serverVo.getExecutorParam(),param.getExecutorParam()));
         }
         if(!equals(param.getExecutorRouteStrategy(),serverVo.getExecutorRouteStrategy())){
             equals = false;
-            updateContent.add("路由策略由[%s]修改为[%s]".formatted(serverVo.getExecutorRouteStrategy(),param.getExecutorRouteStrategy()));
+            updateContent.add(String.format("路由策略由[%s]修改为[%s]",serverVo.getExecutorRouteStrategy(),param.getExecutorRouteStrategy()));
         }
         if(!equals(param.getChildJobId(),serverVo.getChildJobId())){
             equals = false;
-            updateContent.add("子任务ID由[%s]修改为[%s]".formatted(serverVo.getChildJobId(),param.getChildJobId()));
+            updateContent.add(String.format("子任务ID由[%s]修改为[%s]",serverVo.getChildJobId(),param.getChildJobId()));
         }
         if(!equals(param.getMisfireStrategy(),serverVo.getMisfireStrategy())){
             equals = false;
-            updateContent.add("调度过期策略由[%s]修改为[%s]".formatted(serverVo.getMisfireStrategy(),param.getMisfireStrategy()));
+            updateContent.add(String.format("调度过期策略由[%s]修改为[%s]",serverVo.getMisfireStrategy(),param.getMisfireStrategy()));
         }
         if(!equals(param.getExecutorBlockStrategy(),serverVo.getExecutorBlockStrategy())){
             equals = false;
-            updateContent.add("阻塞处理策略由[%s]修改为[%s]".formatted(serverVo.getExecutorBlockStrategy(),param.getExecutorBlockStrategy()));
+            updateContent.add(String.format("阻塞处理策略由[%s]修改为[%s]",serverVo.getExecutorBlockStrategy(),param.getExecutorBlockStrategy()));
         }
         if(!equals(param.getExecutorTimeout(),serverVo.getExecutorTimeout())){
             equals = false;
-            updateContent.add("任务超时时间由[%s]修改为[%s]".formatted(serverVo.getExecutorTimeout(),param.getExecutorTimeout()));
+            updateContent.add(String.format("任务超时时间由[%s]修改为[%s]",serverVo.getExecutorTimeout(),param.getExecutorTimeout()));
         }
         if(!equals(param.getExecutorFailRetryCount(),serverVo.getExecutorFailRetryCount())){
             equals = false;
-            updateContent.add("失败重试次数由[%s]修改为[%s]".formatted(serverVo.getExecutorFailRetryCount(),param.getExecutorFailRetryCount()));
+            updateContent.add(String.format("失败重试次数由[%s]修改为[%s]",serverVo.getExecutorFailRetryCount(),param.getExecutorFailRetryCount()));
         }
         if(!equals(param.getGlueSource(),serverVo.getGlueSource())){
             equals = false;
-            updateContent.add("源码由[%s]修改为[%s]".formatted(serverVo.getGlueSource(),param.getGlueSource()));
+            updateContent.add(String.format("源码由[%s]修改为[%s]",serverVo.getGlueSource(),param.getGlueSource()));
         }
         if(!equals(param.getGlueRemark(),serverVo.getGlueRemark())){
             equals = false;
-            updateContent.add("源码备注由[%s]修改为[%s]".formatted(serverVo.getGlueRemark(),param.getGlueRemark()));
+            updateContent.add(String.format("源码备注由[%s]修改为[%s]",serverVo.getGlueRemark(),param.getGlueRemark()));
         }
         if(!equals){
             param.setUpdateContent(String.join(",",updateContent));

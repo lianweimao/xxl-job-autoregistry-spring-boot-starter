@@ -39,6 +39,19 @@ public @interface XxlJobAutoRegistry {
     String desc();
 
     /**
+     * 任务负责人
+     * 为空时自动填充为 来自XX服务的定时任务
+     * @return
+     */
+    String author() default "";
+
+    /**
+     * 报警邮件
+     * @return
+     */
+    String alarmEmail() default "";
+
+    /**
      * 调度类型
      * @return
      */
