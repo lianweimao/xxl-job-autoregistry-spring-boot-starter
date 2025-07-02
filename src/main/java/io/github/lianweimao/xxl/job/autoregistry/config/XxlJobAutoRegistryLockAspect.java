@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @Aspect
 @Slf4j
-public class XxlJobAutoRegistryAspect {
+public class XxlJobAutoRegistryLockAspect {
 
     @Around(value="execution(public * io.github.lianweimao.xxl.job.autoregistry.config.AutoRegistryWorker.afterSingletonsInstantiated(..))")
     public Object doAround(ProceedingJoinPoint pjp) throws Throwable {
@@ -25,9 +25,9 @@ public class XxlJobAutoRegistryAspect {
             throw new RuntimeException(e);
         }
         if (!success) {
-            throw new RuntimeException("获取xxljob自动注册锁失败");
+            throw new RuntimeException("获取xxlJob自动注册锁失败");
         }
-        log.info("获取xxljob自动注册锁成功");
+        log.info("获取xxlJob自动注册锁成功");
         try {
             Object proceed = pjp.proceed();
             return proceed;

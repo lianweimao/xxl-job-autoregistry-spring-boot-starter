@@ -5,13 +5,23 @@ import org.springframework.beans.factory.annotation.Value;
 
 @Data
 public class XxlJobProperties {
-    @Value("${xxl.job.admin.addresses}")
-    private String adminAddresses;
-    @Value("${xxl.job.admin.username}")
+    /**
+     * admin 用户名
+     */
     private String adminUsername;
-    @Value("${xxl.job.admin.password}")
+    /**
+     * admin 密码
+     */
     private String adminPassword;
-    @Value("${xxl.job.executor.appname}")
+
+    /**
+     * 调度中心访问地址
+     */
+    private String adminAddresses;
+
+    /**
+     * 执行器应用名
+     */
     private String executorAppname;
 
     /**

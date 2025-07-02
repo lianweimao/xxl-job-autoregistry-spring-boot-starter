@@ -12,6 +12,6 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Import(XxlJobAutoRegistryAspect.class)
+@Import(XxlJobAutoRegistryLockAspect.class)
 public @interface EnableRedissonLockForXxlJobAutoRegistry {
 }
