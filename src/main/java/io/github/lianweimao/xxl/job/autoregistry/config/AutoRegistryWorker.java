@@ -15,17 +15,16 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -93,12 +92,13 @@ public class AutoRegistryWorker {
                     continue;
                 }
                 XxlJobAutoRegistry xxlJobAutoRegistry = executeMethod.getAnnotation(XxlJobAutoRegistry.class);
+                String author = Arrays.asList(xxlJobAutoRegistry.author(), String.format("来自%s服务", appname)).stream().filter(StrUtil::isNotBlank).collect(Collectors.joining("-"));
                 // 添加并启动系统任务
                 XxlJobInfoDTO xxlJobInfoDTO = new XxlJobInfoDTO()
                         .setJobGroup(xxlJobGroup.getId())
                         .setJobDesc(xxlJobAutoRegistry.desc())
-                        .setAuthor(Optional.ofNullable(xxlJobAutoRegistry.author()).filter(StrUtil::isNotBlank).orElseGet(() -> String.format("来自%s的定时任务",appname)))
-                        .setAlarmEmail(Optional.ofNullable(xxlJobAutoRegistry.alarmEmail()).filter(StrUtil::isNotBlank).orElse(null))
+                        .setAuthor(author)
+                        .setAlarmEmail(xxlJobAutoRegistry.alarmEmail())
                         .setScheduleType(xxlJobAutoRegistry.scheduleType())
                         .setScheduleConf(xxlJobAutoRegistry.conf())
                         .setMisfireStrategy(xxlJobAutoRegistry.misfireStrategy())
