@@ -109,7 +109,9 @@ public class AutoRegistryWorker {
                         .setExecutorParam(xxlJobAutoRegistry.param())
                         .setExecutorBlockStrategy(xxlJobAutoRegistry.blockStrategy())
                         .setStartWhenCreate(xxlJobAutoRegistry.startWhenCreate())
-                        .setAutoStartWhenStop(xxlJobAutoRegistry.autoStartWhenStop());
+                        .setAutoStartWhenStop(xxlJobAutoRegistry.autoStartWhenStop())
+                        .setExecutorTimeout(xxlJobAutoRegistry.executorTimeout())
+                        .setExecutorFailRetryCount(xxlJobAutoRegistry.executorFailRetryCount());
                 systemJobList.add(xxlJobInfoDTO);
             }
         }

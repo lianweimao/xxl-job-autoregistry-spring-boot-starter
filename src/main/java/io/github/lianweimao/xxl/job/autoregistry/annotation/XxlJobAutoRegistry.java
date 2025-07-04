@@ -94,4 +94,16 @@ public @interface XxlJobAutoRegistry {
      * @return
      */
     boolean autoStartWhenStop() default false;
+
+    /**
+     * 任务执行超时时间,大于0时生效
+     * @return
+     */
+    int executorTimeout() default 0;
+
+    /**
+     * 任务执行失败重试次数,大于0时生效
+     * @return
+     */
+    int executorFailRetryCount() default 0;
 }
