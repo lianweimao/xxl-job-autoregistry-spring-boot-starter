@@ -27,7 +27,7 @@ public class XxlJobAutoRegistryLockAspect {
         if (!success) {
             throw new RuntimeException("获取xxlJob自动注册锁失败");
         }
-        log.info("获取xxlJob自动注册锁成功");
+        log.info("获取 xxlJob 自动注册锁成功");
         try {
             Object proceed = pjp.proceed();
             return proceed;

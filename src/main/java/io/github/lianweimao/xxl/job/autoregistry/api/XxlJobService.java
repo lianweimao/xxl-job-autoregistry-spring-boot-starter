@@ -3,15 +3,14 @@ package io.github.lianweimao.xxl.job.autoregistry.api;
 import cn.hutool.core.util.ReflectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.xxl.job.core.biz.model.ReturnT;
 import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
 import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
 import io.github.lianweimao.xxl.job.autoregistry.api.util.JsonUtil;
 import io.github.lianweimao.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
 import io.github.lianweimao.xxl.job.autoregistry.api.vo.XxlJobInfoVO;
 import io.github.lianweimao.xxl.job.autoregistry.config.XxlJobProperties;
-import com.xxl.job.core.biz.model.ReturnT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.InitializingBean;
@@ -76,10 +75,12 @@ public class XxlJobService implements InitializingBean {
             MultiValueMap<String, String> param = new LinkedMultiValueMap<>();
             param.add("userName",xxlJobProperties.getAdminUsername());
             param.add("password",xxlJobProperties.getAdminPassword());
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
             ResponseEntity<ReturnT<String>> exchange = restTemplate.exchange(
                     url,
                     XxlJobApis.LOGIN.getMethod(),
-                    new HttpEntity<>(param,null),
+                    new HttpEntity<>(param,headers),
                     new ParameterizedTypeReference<ReturnT<String>>() {
                     }
             );
@@ -90,8 +91,8 @@ public class XxlJobService implements InitializingBean {
             if (returnBody.getCode() != ReturnT.SUCCESS_CODE) {
                 throw new IllegalStateException(String.format("登录失败:%s",returnBody.getMsg()));
             }
-            HttpHeaders headers = exchange.getHeaders();
-            List<String> vals = headers.get("Set-Cookie");
+            HttpHeaders respHeaders = exchange.getHeaders();
+            List<String> vals = respHeaders.get("Set-Cookie");
             String xxlJobLoginIdentity = vals.stream()
                     .filter(item -> item.startsWith("XXL_JOB_LOGIN_IDENTITY"))
                     .map(item -> item.split("\\=")[1])
@@ -116,6 +117,7 @@ public class XxlJobService implements InitializingBean {
         param.add("title","");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",getCookie());
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ResponseEntity<String> exchange = restTemplate.exchange(
                 url,
                 api.getMethod(),
@@ -172,6 +174,7 @@ public class XxlJobService implements InitializingBean {
         param.add("id",groupId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",getCookie());
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ResponseEntity<ReturnT<String>> exchange = restTemplate.exchange(
                 url,
                 api.getMethod(),
@@ -232,7 +235,7 @@ public class XxlJobService implements InitializingBean {
         param.add("author","");
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",getCookie());
-
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ResponseEntity<String> exchange = restTemplate.exchange(
                 url,
                 api.getMethod(),
@@ -317,6 +320,7 @@ public class XxlJobService implements InitializingBean {
         param.add("id",jobId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",getCookie());
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ResponseEntity<ReturnT<String>> exchange = restTemplate.exchange(
                 url,
                 api.getMethod(),
@@ -345,6 +349,7 @@ public class XxlJobService implements InitializingBean {
         param.add("id",jobId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",getCookie());
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ResponseEntity<ReturnT<String>> exchange = restTemplate.exchange(
                 url,
                 api.getMethod(),
@@ -373,6 +378,7 @@ public class XxlJobService implements InitializingBean {
         param.add("id",jobId);
         HttpHeaders headers = new HttpHeaders();
         headers.add("Cookie",getCookie());
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         ResponseEntity<ReturnT<String>> exchange = restTemplate.exchange(
                 url,
                 api.getMethod(),
@@ -419,22 +425,27 @@ public class XxlJobService implements InitializingBean {
                         if (serverVo == null) {
                             try {
                                 int jobId = addJob(param);
-                                startJob(jobId);
                                 param.setId(jobId);
                                 resultMap.compute(true, (k, v) -> Optional.ofNullable(v).orElseGet(ArrayList::new)).add(param);
+                                if(param.isStartWhenCreate()){
+                                    startJob(jobId);
+                                }
                             } catch (Exception e) {
                                 log.error("新增任务[{}]失败:{}", param.getExecutorHandler(), e.getMessage(), e);
                             }
                         } else {
                             boolean isEquals = equals(param, serverVo);
-                            if (!isEquals) {
-                                try {
+                            try {
+                                if (!isEquals) {
                                     param.setId(serverVo.getId());
                                     updateJob(param);
                                     resultMap.compute(false, (k, v) -> Optional.ofNullable(v).orElseGet(ArrayList::new)).add(param);
-                                } catch (Exception e) {
-                                    log.error("修改任务[{}]失败:{}", param.getExecutorHandler(), e.getMessage(), e);
                                 }
+                                if(param.isAutoStartWhenStop() &&  serverVo.getTriggerStatus() == 0){
+                                    startJob(serverVo.getId());
+                                }
+                            } catch (Exception e) {
+                                log.error("修改任务[{}]失败:{}", param.getExecutorHandler(), e.getMessage(), e);
                             }
                         }
                     }

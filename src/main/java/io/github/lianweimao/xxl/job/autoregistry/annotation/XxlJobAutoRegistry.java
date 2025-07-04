@@ -1,10 +1,10 @@
 package io.github.lianweimao.xxl.job.autoregistry.annotation;
 
+import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import io.github.lianweimao.xxl.job.autoregistry.enums.ExecutorRouteStrategyEnum;
 import io.github.lianweimao.xxl.job.autoregistry.enums.MisfireStrategyEnum;
 import io.github.lianweimao.xxl.job.autoregistry.enums.ScheduleTypeEnum;
-import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
-import com.xxl.job.core.handler.annotation.XxlJob;
 
 import java.lang.annotation.*;
 
@@ -80,4 +80,18 @@ public @interface XxlJobAutoRegistry {
      * @return
      */
     String param() default "";
+
+    /**
+     * 任务创建后是否自动启动定时任务
+     * 若该参数为true,则任务在创建后会自动启动.
+     * @return
+     */
+    boolean startWhenCreate() default true;
+
+    /**
+     * 是否自动启动已停止的任务.
+     * 如果任务已存在,是否自动启动停止的任务
+     * @return
+     */
+    boolean autoStartWhenStop() default false;
 }

@@ -2,12 +2,12 @@ package io.github.lianweimao.xxl.job.autoregistry.config;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.spring.SpringUtil;
-import io.github.lianweimao.xxl.job.autoregistry.api.XxlJobService;
+import com.xxl.job.core.handler.annotation.XxlJob;
 import io.github.lianweimao.xxl.job.autoregistry.annotation.XxlJobAutoRegistry;
+import io.github.lianweimao.xxl.job.autoregistry.api.XxlJobService;
 import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobGroupDTO;
 import io.github.lianweimao.xxl.job.autoregistry.api.dto.XxlJobInfoDTO;
 import io.github.lianweimao.xxl.job.autoregistry.api.vo.XxlJobGroupVO;
-import com.xxl.job.core.handler.annotation.XxlJob;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationStartedEvent;
@@ -15,12 +15,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
-import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -105,7 +107,9 @@ public class AutoRegistryWorker {
                         .setExecutorRouteStrategy(xxlJobAutoRegistry.routeStrategy())
                         .setExecutorHandler(xxlJob.value())
                         .setExecutorParam(xxlJobAutoRegistry.param())
-                        .setExecutorBlockStrategy(xxlJobAutoRegistry.blockStrategy());
+                        .setExecutorBlockStrategy(xxlJobAutoRegistry.blockStrategy())
+                        .setStartWhenCreate(xxlJobAutoRegistry.startWhenCreate())
+                        .setAutoStartWhenStop(xxlJobAutoRegistry.autoStartWhenStop());
                 systemJobList.add(xxlJobInfoDTO);
             }
         }

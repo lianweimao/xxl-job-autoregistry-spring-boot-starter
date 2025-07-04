@@ -1,10 +1,10 @@
 package io.github.lianweimao.xxl.job.autoregistry.api.dto;
 
 import cn.hutool.core.util.StrUtil;
+import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import io.github.lianweimao.xxl.job.autoregistry.enums.ExecutorRouteStrategyEnum;
 import io.github.lianweimao.xxl.job.autoregistry.enums.MisfireStrategyEnum;
 import io.github.lianweimao.xxl.job.autoregistry.enums.ScheduleTypeEnum;
-import com.xxl.job.core.enums.ExecutorBlockStrategyEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.Accessors;
@@ -55,6 +55,19 @@ public class XxlJobInfoDTO {
 	private String glueRemark;		// GLUE备注
 
 	private String childJobId;		// 子任务ID，多个逗号分隔
+
+
+	/**
+	 * 任务创建后是否自动启动定时任务
+	 * 若该参数为true,则任务在创建后会自动启动.
+	 */
+	private boolean startWhenCreate;
+
+	/**
+	 * 是否自动启动已停止的任务.
+	 * 如果任务已存在,是否自动启动停止的任务
+	 */
+	private boolean autoStartWhenStop;
 
 	/**
 	 * 修改详情
